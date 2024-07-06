@@ -6,81 +6,80 @@ from matplotlib.ticker import FuncFormatter
 
 # Parameters
 # Real Estate Investment
-property_value_initial = 50_000_000  # HUF
-down_payment = 10_000_000  # HUF
-loan_amount = property_value_initial - down_payment  # HUF
+property_value_initial_usd = 200_000  # Initial property value in USD
+down_payment_usd = 50_000  # Down payment in USD
+loan_amount_usd = property_value_initial_usd - down_payment_usd  # Loan amount in USD
 interest_rate = 0.065  # Annual interest rate for the loan
 loan_term_years = 20
-monthly_rent_income_initial = 150_000  # HUF
-maintenance_cost = 30_000  # HUF per month
+monthly_rent_income_initial_usd = 500  # Initial monthly rent income in USD
+maintenance_cost_usd = 100  # USD per month
 property_value_growth_rate = 0.04  # Annual growth rate
 rent_growth_rate = 0.04  # Annual growth rate for rent
 occupancy_rate = 0.90  # 90% occupancy rate (percentage)
 
 # S&P 500 Investment
-initial_investment = 5_000_000  # HUF
+initial_investment_usd = 50_000  # Initial investment in USD
 sp500_growth_rate = 0.10  # Annual growth rate
 investment_term_years = 20
 
 # Monthly property management cost
-management_cost_monthly = monthly_rent_income_initial * 0.10  # 10% of monthly rent income
+management_cost_monthly_usd = monthly_rent_income_initial_usd * 0.10  # 10% of monthly rent income in USD
 
-# Monthly mortgage payment calculation
+# Monthly mortgage payment calculation (using a fixed value for illustration)
 n_payments = loan_term_years * 12
 monthly_interest_rate = interest_rate / 12
-# monthly_payment = npf.pmt(monthly_interest_rate, n_payments, -loan_amount)
-monthly_payment = 300_000  # HUF
+monthly_payment_usd = 1500  # USD (placeholder value)
 
 # Arrays to store results
-property_values = np.zeros(loan_term_years)
-property_equities = np.zeros(loan_term_years)
-sp500_investment_values = np.zeros(loan_term_years)
-total_rent_income = np.zeros(loan_term_years)
-total_value = np.zeros(loan_term_years)  # New array for total real estate value
+property_values_usd = np.zeros(loan_term_years)
+property_equities_usd = np.zeros(loan_term_years)
+sp500_investment_values_usd = np.zeros(loan_term_years)
+total_rent_income_usd = np.zeros(loan_term_years)
+total_value_usd = np.zeros(loan_term_years)  # New array for total real estate value
 
 # Initial values
-current_property_value = property_value_initial
-current_loan_balance = loan_amount
-current_equity = down_payment
-current_sp500_value = initial_investment
-current_rent_income = monthly_rent_income_initial
+current_property_value_usd = property_value_initial_usd
+current_loan_balance_usd = loan_amount_usd
+current_equity_usd = down_payment_usd
+current_sp500_value_usd = initial_investment_usd
+current_rent_income_usd = monthly_rent_income_initial_usd
 
 years = np.arange(1, loan_term_years + 1)
 
 for year in range(loan_term_years):
     # Property value growth
-    current_property_value *= (1 + property_value_growth_rate)
-    property_values[year] = current_property_value
+    current_property_value_usd *= (1 + property_value_growth_rate)
+    property_values_usd[year] = current_property_value_usd
 
     # Calculate remaining loan balance and equity
     for month in range(12):
-        current_loan_balance -= (monthly_payment - current_loan_balance * monthly_interest_rate)
-        current_equity = current_property_value - current_loan_balance
+        current_loan_balance_usd -= (monthly_payment_usd - current_loan_balance_usd * monthly_interest_rate)
+        current_equity_usd = current_property_value_usd - current_loan_balance_usd
 
-    property_equities[year] = current_equity
+    property_equities_usd[year] = current_equity_usd
 
-    # Calculate total rent income with annual growth and deduct management cost
-    effective_monthly_rent_income = monthly_rent_income_initial * occupancy_rate
-    total_rent_income[year] = effective_monthly_rent_income * 12 - management_cost_monthly * 12
-    current_rent_income *= (1 + rent_growth_rate)
+    # Calculate effective monthly rent income and total rent income with annual growth
+    effective_monthly_rent_income_usd = monthly_rent_income_initial_usd * occupancy_rate
+    total_rent_income_usd[year] = effective_monthly_rent_income_usd * 12 - management_cost_monthly_usd * 12
+    monthly_rent_income_initial_usd *= (1 + rent_growth_rate)
 
     # Calculate total value (rent income + property equity)
-    total_value[year] = total_rent_income[year] + current_equity
+    total_value_usd[year] = total_rent_income_usd[year] + current_equity_usd
 
     # S&P 500 investment growth without monthly contributions
     for month in range(12):
-        current_sp500_value *= (1 + sp500_growth_rate / 12)
+        current_sp500_value_usd *= (1 + sp500_growth_rate / 12)
 
-    sp500_investment_values[year] = current_sp500_value
+    sp500_investment_values_usd[year] = current_sp500_value_usd
 
 # Compile results into a DataFrame
 df = pd.DataFrame({
     'Year': years,
-    'Property Value (HUF)': property_values,
-    'Property Equity (HUF)': property_equities,
-    'S&P 500 Value (HUF)': sp500_investment_values,
-    'Annual Rent Income (HUF)': total_rent_income,
-    'Total Real Estate Value (HUF)': total_value  # New column added
+    'Property Value (USD)': property_values_usd,
+    'Property Equity (USD)': property_equities_usd,
+    'S&P 500 Value (USD)': sp500_investment_values_usd,
+    'Annual Rent Income (USD)': total_rent_income_usd,
+    'Total Real Estate Value (USD)': total_value_usd  # New column added
 })
 
 print(df)
@@ -89,40 +88,39 @@ print(df)
 plt.figure(figsize=(10, 6))
 
 # Plotting the lines
-plt.plot(df['Year'], df['Property Equity (HUF)'], label='Property Equity (HUF)')
-plt.plot(df['Year'], df['S&P 500 Value (HUF)'], label='S&P 500 Value (HUF)')
+plt.plot(df['Year'], df['Property Equity (USD)'], label='Property Equity (USD)')
+plt.plot(df['Year'], df['S&P 500 Value (USD)'], label='S&P 500 Value (USD)')
+
 
 # Function to format y-axis ticks in millions
-def millions_formatter(x, pos):
-    return f'{x / 1_000_000:.0f}M'
+def k_formatter(x, pos):
+    return f'${x / 1_000:.0f}K'
 
 
-# Adding text annotations for the values with tilt
+# Adding text annotations for the values with tilt and millions formatter
 for i in range(len(df)):
-    plt.text(df['Year'][i], df['Property Equity (HUF)'][i],
-             f"{millions_formatter(df['Property Equity (HUF)'][i], None)}", fontsize=8,
+    plt.text(df['Year'][i], df['Property Equity (USD)'][i],
+             f"{k_formatter(df['Property Equity (USD)'][i], None)}", fontsize=8,
              ha='left', rotation=5)
-    plt.text(df['Year'][i], df['S&P 500 Value (HUF)'][i], f"{millions_formatter(df['S&P 500 Value (HUF)'][i], None)}",
+    plt.text(df['Year'][i], df['S&P 500 Value (USD)'][i], f"{k_formatter(df['S&P 500 Value (USD)'][i], None)}",
              fontsize=8, ha='left',
              rotation=5)
 
 # Adding labels and title
 plt.xlabel('Year')
-plt.ylabel('Value (HUF)')
+plt.ylabel('Value (USD)')
 plt.title('Property Equity, Total Real Estate Value, and S&P 500 Investment Value Over Time')
 plt.legend()
 plt.grid(True)
 
 # Apply the millions formatter to y-axis
-formatter = FuncFormatter(millions_formatter)
+formatter = FuncFormatter(k_formatter)
 plt.gca().yaxis.set_major_formatter(formatter)
 
 # Scaling the y-axis properly
-max_value = max(df['Property Equity (HUF)'].max(), df['Total Real Estate Value (HUF)'].max(),
-                df['S&P 500 Value (HUF)'].max())
-plt.ylim(0, max_value * 1.1)  # adding 10% padding to the top
-
-plt.savefig('property_values2.png')
+max_value_usd = max(df['Property Equity (USD)'].max(), df['Total Real Estate Value (USD)'].max(),
+                    df['S&P 500 Value (USD)'].max())
+plt.ylim(0, max_value_usd * 1.1)  # adding 10% padding to the top
 
 # Show the plot
 plt.tight_layout()
