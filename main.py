@@ -122,7 +122,7 @@ max_value = max(df['Property Equity (HUF)'].max(), df['Total Real Estate Value (
                 df['S&P 500 Value (HUF)'].max())
 plt.ylim(0, max_value * 1.1)  # adding 10% padding to the top
 
-plt.savefig('property_values.png')
+plt.savefig('property_values2.png')
 
 # Show the plot
 plt.tight_layout()
