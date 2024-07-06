@@ -125,3 +125,5 @@ plt.ylim(0, max_value * 1.1)  # adding 10% padding to the top
 # Show the plot
 plt.tight_layout()
 plt.show()
+
+plt.savefig('property_values.png')
