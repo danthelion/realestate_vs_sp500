@@ -1,1 +1,1 @@
-![img](./property_values2.png)
+![img](./property_values3.png)

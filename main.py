@@ -122,6 +122,8 @@ max_value_usd = max(df['Property Equity (USD)'].max(), df['Total Real Estate Val
                     df['S&P 500 Value (USD)'].max())
 plt.ylim(0, max_value_usd * 1.1)  # adding 10% padding to the top
 
+plt.savefig('property_values3.png')
+
 # Show the plot
 plt.tight_layout()
 plt.show()
